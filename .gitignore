@@ -3,6 +3,5 @@
 .settings
 *~
 *.lnk
-dist
 desktop.ini
 test/qunit
