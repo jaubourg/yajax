@@ -1,0 +1,8 @@
+.DS_Store
+.project
+.settings
+*~
+*.lnk
+dist
+desktop.ini
+test/qunit

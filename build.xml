@@ -1,0 +1,56 @@
+<project name="YajaX" default="all" basedir=".">
+
+	<tstamp>
+		<format property="date" pattern="MM/dd/yy HH:mm:ss.SSS - z" locale="en,US"/>
+	</tstamp>
+	
+	<property file="build/build.properties" />
+
+    <property name="YAJAX" value="${dist}/yajax.js" />
+    <property name="YAJAX_MIN" value="${dist}/yajax.min.js" />
+	
+	<available property="qunit" file="test/qunit" />
+	
+	<target name="qunit-clone" unless="qunit">
+		<exec executable="git" outputproperty="git-qunit" >  
+			<arg line="clone git://github.com/jquery/qunit.git test/qunit"/>  
+		</exec>
+		<echo message="git clone qunit: ${git-qunit}" />
+	</target>
+	<target name="qunit-pull" if="qunit">
+		<exec executable="git" outputproperty="git-qunit" dir="test/qunit" >  
+			<arg line="pull origin master"/>  
+		</exec> 
+		<echo message="git pull qunit: ${git-qunit}" />
+	</target>
+
+    <target name="all" depends="qunit-clone,qunit-pull" description="Main dominoes build, concatenates source files and replaces @VERSION">
+        <echo message="Building: ${YAJAX}" />
+        <mkdir dir="${dist}" />
+        <copy file="${src}/yajax.js" tofile="${YAJAX}" overwrite="true" />
+    	<replaceregexp match="@VERSION" replace="${version}" file="${YAJAX}" />
+    	<replaceregexp match="@YQL_TABLE" replace="${yql_table}" file="${YAJAX}" />
+		<replaceregexp match="@DATE" replace="${date}" flags="g" byline="true" file="${YAJAX}" />
+        <echo message="Building: ${YAJAX_MIN}" />
+		<apply executable="java" parallel="false" verbose="true">
+			<fileset dir="${dist}">
+				<include name="yajax.js" />
+			</fileset>
+			<arg line="-jar" />
+			<arg path="build/google-compiler-20091218.jar" />
+			<arg value="--warning_level" />
+			<arg value="QUIET" />
+			<arg value="--js_output_file" />
+			<arg value="${YAJAX_MIN}" />
+			<arg value="--js" />
+		</apply>
+    	<replaceregexp match=" @license" replace="" file="${YAJAX}" />
+		<gzip src="${YAJAX_MIN}" destfile="${YAJAX_MIN}.gz"/>
+    </target>
+    
+    <target name="clean">
+        <delete dir="${dist}" />
+        <delete dir="test/qunit" />
+    </target>
+    
+</project>
