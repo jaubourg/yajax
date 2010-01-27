@@ -57,7 +57,7 @@
 		
 		} else {
 			
-			"" + value;
+			value = "" + value;
 		
 		}
 		

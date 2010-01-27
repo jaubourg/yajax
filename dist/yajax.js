@@ -1,5 +1,5 @@
 /**
- * YajaX v.0.1(a) [01/27/10 21:08:40.463 - CET]
+ * YajaX v.0.1(a) [01/27/10 21:20:52.366 - CET]
  * Copyright 2010, Julian Aubourg
  * Dual licensed under the MIT and GPL Version 2 licenses
  */
@@ -57,7 +57,7 @@
 		
 		} else {
 			
-			"" + value;
+			value = "" + value;
 		
 		}
 		
